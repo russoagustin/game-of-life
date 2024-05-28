@@ -9,9 +9,9 @@ import java.awt.Color;
 
 public class JuegoVida extends JPanel implements MouseListener {
     // VARIABLES DEL PANEL
-    private static final int CELL_SIZE = 21;
-    private static final int WIDTH = 900;
-    private static final int HEIGHT = 900;
+    private static  int CELL_SIZE = 21;
+    private static final int WIDTH = 9000;
+    private static final int HEIGHT = 9000;
     private static final int ROW = WIDTH / CELL_SIZE;
     private static final int COLUMNS = HEIGHT / CELL_SIZE;
     // VARIABLES DE TABLERO
@@ -27,10 +27,11 @@ public class JuegoVida extends JPanel implements MouseListener {
     private static int[][] tablero = new int[ROW][COLUMNS];
 
     public JuegoVida() {
-        this.setSize(WIDTH, HEIGHT);
+       // this.setSize(WIDTH, HEIGHT);
+        this.setBounds(-WIDTH/2,-HEIGHT/2, WIDTH, HEIGHT);
         // this.setBackground(new Color(56,216,252));
         this.setBackground(Color.BLACK);
-        this.setLocation(-4500, -4500);
+       // this.setLocation(-4500, -4500);
         this.addMouseListener(this);
 
     }
@@ -41,6 +42,13 @@ public class JuegoVida extends JPanel implements MouseListener {
 
     public boolean getPausa() {
         return pausa;
+    }
+
+    public void zoomIn(){
+        CELL_SIZE=CELL_SIZE+CELL_SIZE/4;
+    }
+    public void zoomOut(){
+        CELL_SIZE=CELL_SIZE-CELL_SIZE/4;
     }
 
     // LLENA LA MATRIZ CON 1 Y 0 ALEATORIAMENTE
@@ -147,6 +155,7 @@ public class JuegoVida extends JPanel implements MouseListener {
 
                 } else {
                     g.setColor(colorActual);
+                    //g.fillArc(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE,0,360);
                     g.fillRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                     g.setColor(Color.darkGray);
                     if (actualGrid == 1 || actualGrid == 3) {
