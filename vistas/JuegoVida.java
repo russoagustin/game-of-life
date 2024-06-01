@@ -10,25 +10,27 @@ import java.awt.Color;
 public class JuegoVida extends JPanel implements MouseListener {
     // VARIABLES DEL PANEL
     private static  int CELL_SIZE = 21;
-    private static final int WIDTH = 9000;
-    private static final int HEIGHT = 9000;
-    private static final int ROW = WIDTH / CELL_SIZE;
+    private static final int WIDTH = 900;
+    private static final int HEIGHT = 900;
+    private static final int ROWS = WIDTH / CELL_SIZE;
     private static final int COLUMNS = HEIGHT / CELL_SIZE;
     // VARIABLES DE TABLERO
-    private static final Color[] colores = { Color.CYAN, Color.WHITE, Color.MAGENTA, Color.green };
+    private static final Color[] colorV = {Color.WHITE, Color.CYAN, Color.MAGENTA, Color.green };
     private static int colorIndex = 0;
-    private static Color colorActual = colores[0];
+    private static Color colorActual = colorV[0];
 
     // VARIABLES DE VISTA
-    private static int[] gridOptions = { 1, 2, 3, 4 };
+    private static final int[] gridOptions = { 1, 2, 3, 4 };
     private static int gridIndex = 0;
     private static int actualGrid = 1;
     private static boolean pausa = false;
-    private static int[][] tablero = new int[ROW][COLUMNS];
+    private static int[][] board = new int[ROWS][COLUMNS];
+    public static int z=CELL_SIZE;
 
     public JuegoVida() {
        // this.setSize(WIDTH, HEIGHT);
-        this.setBounds(-WIDTH/2,-HEIGHT/2, WIDTH, HEIGHT);
+        //this.setBounds(-WIDTH/2,-HEIGHT/2, WIDTH, HEIGHT);
+        this.setBounds(0,0, WIDTH, HEIGHT);
         // this.setBackground(new Color(56,216,252));
         this.setBackground(Color.BLACK);
        // this.setLocation(-4500, -4500);
@@ -36,28 +38,29 @@ public class JuegoVida extends JPanel implements MouseListener {
 
     }
 
-    public void pausa() {
+    public void pause() {
         pausa = !pausa;
     }
 
-    public boolean getPausa() {
-        return pausa;
-    }
-
     public void zoomIn(){
+        this.setBounds(-WIDTH/2-CELL_SIZE/4,-HEIGHT/2-CELL_SIZE/4, WIDTH, HEIGHT);
         CELL_SIZE=CELL_SIZE+CELL_SIZE/4;
     }
+
     public void zoomOut(){
-        CELL_SIZE=CELL_SIZE-CELL_SIZE/4;
+        this.setBounds((-WIDTH/2)+(z/WIDTH*4),(-HEIGHT/2)+(z/WIDTH*4), WIDTH, HEIGHT);
+        CELL_SIZE=CELL_SIZE-1;
+        z=z+10;
+        System.out.println(ROWS);
     }
 
     // LLENA LA MATRIZ CON 1 Y 0 ALEATORIAMENTE
-    public void tableroAleatorio() {
-        Random aleatorio = new Random();
-        for (int e = 0; e < 3*ROW; e++) {
-            for (int i = 2*ROW/CELL_SIZE; i <= aleatorio.nextInt(ROW); i++) {
-                for (int j = 2*ROW/CELL_SIZE; j <= aleatorio.nextInt(COLUMNS); j++) {
-                    tablero[i][j] = aleatorio.nextInt(2);
+    public void randomBoard() {
+        Random random = new Random();
+        for (int e = 0; e < 3* ROWS; e++) {
+            for (int i = 2* ROWS /CELL_SIZE; i <= random.nextInt(ROWS); i++) {
+                for (int j = 2* ROWS /CELL_SIZE; j <= random.nextInt(COLUMNS); j++) {
+                    board[i][j] = random.nextInt(2);
                 }
             }
         }
@@ -65,75 +68,56 @@ public class JuegoVida extends JPanel implements MouseListener {
     }
 
     // ACTUALIZA EL TABLERO AL SIGUIENTE ESTADO
-    public void actualizarTablero() {
+    public void refreshBoard() {
         if (pausa) {
-            int[][] nuevoTablero = new int[ROW][COLUMNS];
-            for (int i = 0; i < tablero.length; i++) {
-                for (int j = 0; j < tablero.length; j++) {
-                    if (contarVecinos(i, j) == 3) {
+            int[][] nuevoTablero = new int[ROWS][COLUMNS];
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board.length; j++) {
+                    if (neighborsCount(i, j) == 3) {
                         nuevoTablero[i][j] = 1;
-                    } else if (tablero[i][j] == 1 && (contarVecinos(i, j) > 3 || contarVecinos(i, j) <= 1)) {
+                    } else if (board[i][j] == 1 && (neighborsCount(i, j) > 3 || neighborsCount(i, j) <= 1)) {
                         nuevoTablero[i][j] = 0;
-                    } else if (tablero[i][j] == 1 && contarVecinos(i, j) == 2) {
+                    } else if (board[i][j] == 1 && neighborsCount(i, j) == 2) {
                         nuevoTablero[i][j] = 1;
                     }
                 }
             }
-            tablero = nuevoTablero;
+            board = nuevoTablero;
         }
 
     }
 
     //CUENTA LA CANTIDAD DE VECINOS VIVOS DE UNA DETERMINADA CELDA
     //EN UN TABLERO "TOROIDAL" (EXTREMOS CONTIGUOS)
-    private int contarVecinos(int a, int b) {
-        int suma = 0;
-        suma = tablero[(a + 1) % ROW][(b + 1) % COLUMNS] +
-                tablero[(a) % ROW][(b + 1) % COLUMNS] +
-                tablero[(a + 1) % ROW][(b) % COLUMNS] +
-                tablero[(ROW + a - 1) % ROW][(COLUMNS + b - 1) % COLUMNS] +
-                tablero[(ROW + a - 1) % ROW][(b + 1) % COLUMNS] +
-                tablero[(a + 1) % ROW][(COLUMNS + b - 1) % COLUMNS] +
-                tablero[(ROW + a) % ROW][(COLUMNS + b - 1) % COLUMNS] +
-                tablero[(ROW + a - 1) % ROW][(COLUMNS + b) % COLUMNS];
+    private int neighborsCount(int a, int b) {
+        int total;
+        total = board[(a + 1) % ROWS][(b + 1) % COLUMNS] +
+                board[(a) % ROWS][(b + 1) % COLUMNS] +
+                board[(a + 1) % ROWS][(b) % COLUMNS] +
+                board[(ROWS + a - 1) % ROWS][(COLUMNS + b - 1) % COLUMNS] +
+                board[(ROWS + a - 1) % ROWS][(b + 1) % COLUMNS] +
+                board[(a + 1) % ROWS][(COLUMNS + b - 1) % COLUMNS] +
+                board[(ROWS + a) % ROWS][(COLUMNS + b - 1) % COLUMNS] +
+                board[(ROWS + a - 1) % ROWS][(COLUMNS + b) % COLUMNS];
 
-        // System.out.println(suma);
-        return suma;
+        // System.out.println(total);
+        return total;
     }
-    /* 
-    // CUENTA LA CANTIDAD DE VECINOS VIVOS DE UNA DETERMINADA CELDA
-    private static int contarVecinosVivos(int a, int b) {
-        int suma = 0;
-        for (int i = a - 2; i <= a + 1; i++) {
-            for (int j = b - 2; j <= b + 1; j++) {
-                // suma=suma+tablero[(i+1)%ROW][(j+1)%COLUMNS];
-                if (i >= 0 && j >= 0 && i < ROW && j < COLUMNS) {
-                    // suma = suma + tablero[i][j];
-                    // suma=suma+tablero[(i+1)%ROW][(j+1)%COLUMNS];
-                }
-            }
-        }
-        if (tablero[a][b] == 1) {
-            return suma - 1;
-        } else {
-            return suma;
-        }
-    }*/
 
-    public void limpiarTablero() {
-        for (int i = 0; i < tablero.length; i++) {
-            for (int j = 0; j < tablero.length; j++) {
-                tablero[i][j] = 0;
+    public void clearBoard() {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                board[i][j] = 0;
             }
         }
     }
 
-    public void cambiarColor() {
-        colorActual = colores[(colorIndex + 1) % colores.length];
+    public void switchColor() {
+        colorActual = colorV[(colorIndex + 1) % colorV.length];
         colorIndex = colorIndex + 1;
     }
 
-    public void cambiarGrid() {
+    public void switchGrid() {
         actualGrid = gridOptions[(gridIndex + 1) % gridOptions.length];
         gridIndex = gridIndex + 1;
     }
@@ -142,13 +126,10 @@ public class JuegoVida extends JPanel implements MouseListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        //g.setColor(Color.darkGray);
-        // pintarTablero();
-        for (int i = 0; i < ROW; i++) {
+        for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
-                if (tablero[i][j] == 0) {
+                if (board[i][j] == 0) {
                     g.setColor(Color.darkGray);
-                    // g.fillRect(i*CELL_SIZE, j*CELL_SIZE, CELL_SIZE, CELL_SIZE);
                     if (actualGrid == 1 || actualGrid == 2) {
                         g.drawRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                     }
@@ -172,10 +153,10 @@ public class JuegoVida extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (tablero[e.getX() / CELL_SIZE][e.getY() / CELL_SIZE] == 0) {
-            tablero[e.getX() / CELL_SIZE][e.getY() / CELL_SIZE] = 1;
+        if (board[e.getX() / CELL_SIZE][e.getY() / CELL_SIZE] == 0) {
+            board[e.getX() / CELL_SIZE][e.getY() / CELL_SIZE] = 1;
         } else {
-            tablero[e.getX() / CELL_SIZE][e.getY() / CELL_SIZE] = 0;
+            board[e.getX() / CELL_SIZE][e.getY() / CELL_SIZE] = 0;
         }
     }
 
