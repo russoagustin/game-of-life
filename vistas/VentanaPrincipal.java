@@ -12,7 +12,7 @@ public class VentanaPrincipal extends JFrame implements KeyListener{
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLayout(null);
         this.setSize(WIDTH, HEIGHT);
-        this.setResizable(true);
+        this.setResizable(false);
         this.setLocation(540, 100);
         this.setVisible(true);
         this.add(game);
@@ -48,28 +48,18 @@ public class VentanaPrincipal extends JFrame implements KeyListener{
             case 'g':
                 game.switchGrid();
                 break;
-            case 'z':
-                game.zoomIn();
-                break;
-            case'<':
-                game.zoomOut();
-                break;
-            default: //game.pause();
+            default: game.pause();
                 break;
         }                
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        //game.pause();
-        System.out.println("presionado");
-       
+
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-       // game.pause();
-        System.out.println("presionado");
         
     }
 

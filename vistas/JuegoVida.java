@@ -10,62 +10,43 @@ import java.awt.Color;
 public class JuegoVida extends JPanel implements MouseListener {
     // VARIABLES DEL PANEL
     private static  int CELL_SIZE = 21;
-    private static  int WIDTH = 9000;
-    private static  int HEIGHT = 9000;
+    private static  int WIDTH = 900;
+    private static  int HEIGHT = 900;
     private static final int ROWS = WIDTH / CELL_SIZE;
     private static final int COLUMNS = HEIGHT / CELL_SIZE;
     // VARIABLES DE TABLERO
     private static final Color[] colorV = {Color.WHITE, Color.CYAN, Color.MAGENTA, Color.green };
-    private static int colorIndex = 0;
-    private static Color colorActual = colorV[0];
+    private  int colorIndex = 0;
+    private  Color colorActual = colorV[0];
 
     // VARIABLES DE VISTA
     private static final int[] gridOptions = { 1, 2, 3, 4 };
-    private static int gridIndex = 0;
-    private static int actualGrid = 1;
-    private static boolean pausa = false;
+    private  int gridIndex = 0;
+    private  int actualGrid = 1;
+    private  boolean pausa = false;
     private static int[][] board = new int[ROWS][COLUMNS];
-    public static int z=CELL_SIZE;
+   
 
     public JuegoVida() {
-       // this.setSize(WIDTH, HEIGHT);
-        this.setBounds(-WIDTH/2,-HEIGHT/2, WIDTH, HEIGHT);
-        //this.setBounds(0,0, WIDTH, HEIGHT);
-        // this.setBackground(new Color(56,216,252));
+        this.setSize(WIDTH, HEIGHT);
         this.setBackground(Color.BLACK);
-       // this.setLocation(-4500, -4500);
         this.addMouseListener(this);
-
     }
 
     public void pause() {
         pausa = !pausa;
     }
 
-    public void zoomIn(){
-        WIDTH=WIDTH+100;
-        HEIGHT=HEIGHT+100;
-        this.setBounds(-WIDTH/2,-HEIGHT/2, WIDTH, HEIGHT);
-    }
-
-    public void zoomOut(){
-        this.setBounds((-WIDTH/2)+(z/WIDTH*4),(-HEIGHT/2)+(z/WIDTH*4), WIDTH, HEIGHT);
-        CELL_SIZE=CELL_SIZE-1;
-        z=z+10;
-        System.out.println(ROWS);
-    }
-
     // LLENA LA MATRIZ CON 1 Y 0 ALEATORIAMENTE
     public void randomBoard() {
+        this.clearBoard();
         Random random = new Random();
-        for (int e = 0; e < 3* ROWS; e++) {
-            for (int i = 2* ROWS /CELL_SIZE; i <= random.nextInt(ROWS); i++) {
-                for (int j = 2* ROWS /CELL_SIZE; j <= random.nextInt(COLUMNS); j++) {
-                    board[i][j] = random.nextInt(2);
-                }
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                if(random.nextInt(7)==1)
+                board[i][j] = 1;
             }
-        }
-        
+        }   
     }
 
     // ACTUALIZA EL TABLERO AL SIGUIENTE ESTADO
@@ -89,7 +70,7 @@ public class JuegoVida extends JPanel implements MouseListener {
     }
 
     //CUENTA LA CANTIDAD DE VECINOS VIVOS DE UNA DETERMINADA CELDA
-    //EN UN TABLERO "TOROIDAL" (EXTREMOS CONTIGUOS)
+    //EN UN TABLERO CUYOS EXTREMOS SON CONTIGUOS
     private int neighborsCount(int a, int b) {
         int total;
         total = board[(a + 1) % ROWS][(b + 1) % COLUMNS] +
@@ -101,7 +82,6 @@ public class JuegoVida extends JPanel implements MouseListener {
                 board[(ROWS + a) % ROWS][(COLUMNS + b - 1) % COLUMNS] +
                 board[(ROWS + a - 1) % ROWS][(COLUMNS + b) % COLUMNS];
 
-        // System.out.println(total);
         return total;
     }
 
@@ -113,11 +93,13 @@ public class JuegoVida extends JPanel implements MouseListener {
         }
     }
 
+    //CAMBIA EL COLOR DE LAS CELDAS CON UN ARREGLO CIRCULAR
     public void switchColor() {
         colorActual = colorV[(colorIndex + 1) % colorV.length];
         colorIndex = colorIndex + 1;
     }
 
+    //CAMBIA SI SE VE EL GRID O LOS BORDES DE LAS CELDAS CON UN ARREGLO CIRCULAR
     public void switchGrid() {
         actualGrid = gridOptions[(gridIndex + 1) % gridOptions.length];
         gridIndex = gridIndex + 1;
@@ -137,7 +119,7 @@ public class JuegoVida extends JPanel implements MouseListener {
 
                 } else {
                     g.setColor(colorActual);
-                    //g.fillArc(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE,0,360);
+
                     g.fillRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                     g.setColor(Color.darkGray);
                     if (actualGrid == 1 || actualGrid == 3) {
