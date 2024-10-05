@@ -24,7 +24,7 @@ public class JuegoVida extends JPanel implements MouseListener {
     private  int gridIndex = 0;
     private  int actualGrid = 1;
     private  boolean pausa = false;
-    private static int[][] board = new int[ROWS][COLUMNS];
+    private  int[][] board = new int[ROWS][COLUMNS];
    
 
     public JuegoVida() {
