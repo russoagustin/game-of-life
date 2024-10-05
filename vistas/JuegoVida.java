@@ -9,9 +9,9 @@ import java.awt.Color;
 
 public class JuegoVida extends JPanel implements MouseListener {
     // VARIABLES DEL PANEL
-    private static  int CELL_SIZE = 21;
-    private static  int WIDTH = 900;
-    private static  int HEIGHT = 900;
+    private static final  int CELL_SIZE = 21;
+    private static final int WIDTH = 900;
+    private static final  int HEIGHT = 900;
     private static final int ROWS = WIDTH / CELL_SIZE;
     private static final int COLUMNS = HEIGHT / CELL_SIZE;
     // VARIABLES DE TABLERO
