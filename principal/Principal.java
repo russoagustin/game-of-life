@@ -1,5 +1,5 @@
 package principal;
-import vistas.VentanaPrincipal;
+import juego.VentanaPrincipal;
 /**
  * Principal
  */
